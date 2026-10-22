@@ -1,0 +1,4 @@
+@SmartRecipe_Api_HostAddress = https://localhost:7202
+
+GET {{SmartRecipe_Api_HostAddress}}/api/recipes
+Accept: application/jsona
