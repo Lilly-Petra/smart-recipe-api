@@ -34,8 +34,8 @@ namespace SmartRecipe.Api.Controllers
                     return CreatedAtAction(nameof(GetRecipe), new { id = recipe.Id }, recipe);
                 }
 
-                [HttpPut("{id}")]
-                public ActionResult<Recipe> UpdateRecipe(int id, Recipe recipe)
+        [httpput("{id}")]
+        public actionresult<recipe> updaterecipe(int id, recipe recipe)
                 {
                     // In a real application, you would update the recipe in a database here.
                     recipe.Id = id; // Ensure the ID is set correctly
