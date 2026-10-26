@@ -1,4 +1,30 @@
 @SmartRecipe_Api_HostAddress = https://localhost:7202
 
+# Get all recipes
 GET {{SmartRecipe_Api_HostAddress}}/api/recipes
+Accept: application/jsona
+
+###
+# Get a specific recipe by ID
+GET {{SmartRecipe_Api_HostAddress}}/api/recipes/2
+Accept: application/jsona
+
+###
+# Get a specific recipe by ID that does not exist
+GET {{SmartRecipe_Api_HostAddress}}/api/recipes/19
+Accept: application/jsona
+
+###
+# Create a recipe
+POST {{SmartRecipe_Api_HostAddress}}/api/recipes
+Content-Type: application/json
+
+{
+  "name": "Vegetable Curry",
+  "mainIngredient": "Chickpeas"
+}
+
+###
+# Get a newly created recipe by ID
+GET {{SmartRecipe_Api_HostAddress}}/api/recipes/4
 Accept: application/jsona

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SmartRecipe.Api.Helpers;
 using SmartRecipe.Api.Models;
 
 namespace SmartRecipe.Api.Controllers
@@ -22,32 +23,63 @@ namespace SmartRecipe.Api.Controllers
         [HttpGet("{id}")]
         public ActionResult<Recipe> GetRecipe(int id)
         {
-            var recipe = new Recipe { Id = id, Name = "Sample Recipe", MainIngredient = "Sample Ingredient" };
+            var recipe = RecipeHelpers.Recipes.FirstOrDefault(r => r.Id == id);
+            if (recipe is null)
+            {
+                return NotFound();
+            }
+
             return Ok(recipe);
         }
-        /*
-                [HttpPost]
-                public ActionResult<Recipe> CreateRecipe(Recipe recipe)
-                {
-                    // In a real application, you would save the recipe to a database here.
-                    recipe.Id = new Random().Next(1000); // Simulate ID generation
-                    return CreatedAtAction(nameof(GetRecipe), new { id = recipe.Id }, recipe);
-                }
 
-        [httpput("{id}")]
-        public actionresult<recipe> updaterecipe(int id, recipe recipe)
-                {
-                    // In a real application, you would update the recipe in a database here.
-                    recipe.Id = id; // Ensure the ID is set correctly
-                    return Ok(recipe);
-                }
+        [HttpPost]
+        public ActionResult<Recipe> CreateRecipe(Recipe recipe)
+        {
+            if (string.IsNullOrWhiteSpace(recipe.Name) ||
+                string.IsNullOrWhiteSpace(recipe.MainIngredient))
+            {
+                return BadRequest("Name and MainIngredient are required.");
+            }
 
-                [HttpDelete("{id}")]
-                public ActionResult<Recipe> DeleteRecipe(int id)
-                {
-                    // In a real application, you would delete the recipe from a database here.
-                    return Ok();
-                }
-        */
+            int v = RecipeHelpers.Recipes.Max(r => r.Id) + 1;
+            recipe.Id = v;
+            RecipeHelpers.Recipes.Add(recipe);
+
+            return CreatedAtAction(nameof(GetRecipe), new { id = recipe.Id }, recipe);
+        }
+
+        [HttpPut("{id}")]
+        public ActionResult<Recipe> UpdateRecipe(int id, Recipe recipe)
+        {
+            // in a real application, you would update the recipe in a database here.
+            var recipe2update = RecipeHelpers.Recipes.FirstOrDefault(r => r.Id == id);
+            if (recipe2update is null)
+            {
+                return NotFound();
+            }
+            if (string.IsNullOrWhiteSpace(recipe.Name) ||
+                string.IsNullOrWhiteSpace(recipe.MainIngredient))
+            {
+                return BadRequest("Name and MainIngredient are required.");
+            }
+
+            recipe2update.Name = recipe.Name;
+            recipe2update.MainIngredient = recipe.MainIngredient;
+
+            return Ok(recipe);
+        }
+
+        [HttpDelete("{id}")]
+        public ActionResult<Recipe> DeleteRecipe(int id)
+        {
+            // in a real application, you would delete the recipe from a database here.
+            var recipe = RecipeHelpers.Recipes.FirstOrDefault(r => r.Id == id);
+            if (recipe is null)
+            {
+                return NotFound();
+            }
+            RecipeHelpers.Recipes.Remove(recipe);
+            return Ok();
+        }
     }
 }
