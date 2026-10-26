@@ -28,3 +28,22 @@ Content-Type: application/json
 # Get a newly created recipe by ID
 GET {{SmartRecipe_Api_HostAddress}}/api/recipes/4
 Accept: application/jsona
+
+###
+#Update a recipe
+PUT {{SmartRecipe_Api_HostAddress}}/api/recipes/4
+Content-Type: application/json
+
+{
+  "name": "Bean Curry",
+  "mainIngredient": "Beans"
+}
+
+###
+#delete a recipe
+DELETE {{SmartRecipe_Api_HostAddress}}/api/recipes/4
+
+###
+#Verify that the recipe has been deleted  
+GET {{SmartRecipe_Api_HostAddress}}/api/recipes/4  
+Accept: application/jsona

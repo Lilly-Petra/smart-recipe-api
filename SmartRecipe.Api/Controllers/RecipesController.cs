@@ -66,7 +66,7 @@ namespace SmartRecipe.Api.Controllers
             recipe2update.Name = recipe.Name;
             recipe2update.MainIngredient = recipe.MainIngredient;
 
-            return Ok(recipe);
+            return Ok(recipe2update);
         }
 
         [HttpDelete("{id}")]
@@ -79,7 +79,8 @@ namespace SmartRecipe.Api.Controllers
                 return NotFound();
             }
             RecipeHelpers.Recipes.Remove(recipe);
-            return Ok();
+
+            return NoContent();
         }
     }
 }
