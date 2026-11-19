@@ -1,29 +1,39 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SmartRecipe.Api.Helpers;
+using Microsoft.EntityFrameworkCore;
+using SmartRecipe.Api.Data;
+//using SmartRecipe.Api.Helpers;
 using SmartRecipe.Api.Models;
 
 namespace SmartRecipe.Api.Controllers
 {
+
     [ApiController]
     [Route("api/[controller]")]
     public class RecipesController : ControllerBase
     {
-        [HttpGet]
-        public ActionResult<IEnumerable<Recipe>> GetRecipes()
+        private readonly AppDbContext _context;
+        public RecipesController(AppDbContext context)
         {
-            var recipes = new List<Recipe>
-            {
-                new() { Id = 1, Name = "Spaghetti Pomodoro", MainIngredient = "Pasta" },
-                new() { Id = 2, Name = "Mushroom Risotto", MainIngredient = "Mushrooms" },
-                new() { Id = 3, Name = "Chicken Stir Fry", MainIngredient = "Chicken" }
-            };
+            _context = context;
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Recipe>>> GetRecipes()
+        {
+            var recipes = await _context.Recipes
+                .AsNoTracking()
+                .ToListAsync();
+
             return Ok(recipes);
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Recipe> GetRecipe(int id)
+        public async Task<ActionResult<Recipe>> GetRecipe(int id)
         {
-            var recipe = RecipeHelpers.Recipes.FirstOrDefault(r => r.Id == id);
+            var recipe = await _context.Recipes
+                .AsNoTracking()
+                .FirstOrDefaultAsync(r => r.Id == id);
+
             if (recipe is null)
             {
                 return NotFound();
@@ -33,7 +43,7 @@ namespace SmartRecipe.Api.Controllers
         }
 
         [HttpPost]
-        public ActionResult<Recipe> CreateRecipe(Recipe recipe)
+        public async Task<ActionResult<Recipe>> CreateRecipe(Recipe recipe)
         {
             if (string.IsNullOrWhiteSpace(recipe.Name) ||
                 string.IsNullOrWhiteSpace(recipe.MainIngredient))
@@ -41,18 +51,19 @@ namespace SmartRecipe.Api.Controllers
                 return BadRequest("Name and MainIngredient are required.");
             }
 
-            int v = RecipeHelpers.Recipes.Max(r => r.Id) + 1;
-            recipe.Id = v;
-            RecipeHelpers.Recipes.Add(recipe);
+
+            _context.Recipes.Add(recipe);
+            await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetRecipe), new { id = recipe.Id }, recipe);
         }
 
         [HttpPut("{id}")]
-        public ActionResult<Recipe> UpdateRecipe(int id, Recipe recipe)
+        public async Task<ActionResult<Recipe>> UpdateRecipe(int id, Recipe recipe)
         {
             // in a real application, you would update the recipe in a database here.
-            var recipe2update = RecipeHelpers.Recipes.FirstOrDefault(r => r.Id == id);
+            var recipe2update = await _context.Recipes.FirstOrDefaultAsync(r => r.Id == id);
+
             if (recipe2update is null)
             {
                 return NotFound();
@@ -66,19 +77,24 @@ namespace SmartRecipe.Api.Controllers
             recipe2update.Name = recipe.Name;
             recipe2update.MainIngredient = recipe.MainIngredient;
 
+            _context.Recipes.Update(recipe2update);
+            await _context.SaveChangesAsync();
+
             return Ok(recipe2update);
         }
 
         [HttpDelete("{id}")]
-        public ActionResult<Recipe> DeleteRecipe(int id)
+        public async Task<ActionResult<Recipe>> DeleteRecipe(int id)
         {
-            // in a real application, you would delete the recipe from a database here.
-            var recipe = RecipeHelpers.Recipes.FirstOrDefault(r => r.Id == id);
+            var recipe = await _context.Recipes.FirstOrDefaultAsync(r => r.Id == id);
+
             if (recipe is null)
             {
                 return NotFound();
             }
-            RecipeHelpers.Recipes.Remove(recipe);
+
+            _context.Recipes.Remove(recipe);
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }

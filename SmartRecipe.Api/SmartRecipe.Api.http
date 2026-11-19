@@ -2,17 +2,17 @@
 
 # Get all recipes
 GET {{SmartRecipe_Api_HostAddress}}/api/recipes
-Accept: application/jsona
+Accept: application/json
 
 ###
 # Get a specific recipe by ID
 GET {{SmartRecipe_Api_HostAddress}}/api/recipes/2
-Accept: application/jsona
+Accept: application/json
 
 ###
 # Get a specific recipe by ID that does not exist
 GET {{SmartRecipe_Api_HostAddress}}/api/recipes/19
-Accept: application/jsona
+Accept: application/json
 
 ###
 # Create a recipe
@@ -26,12 +26,12 @@ Content-Type: application/json
 
 ###
 # Get a newly created recipe by ID
-GET {{SmartRecipe_Api_HostAddress}}/api/recipes/4
-Accept: application/jsona
+GET {{SmartRecipe_Api_HostAddress}}/api/recipes/2
+Accept: application/json
 
 ###
 #Update a recipe
-PUT {{SmartRecipe_Api_HostAddress}}/api/recipes/4
+PUT {{SmartRecipe_Api_HostAddress}}/api/recipes/2
 Content-Type: application/json
 
 {
@@ -45,5 +45,5 @@ DELETE {{SmartRecipe_Api_HostAddress}}/api/recipes/4
 
 ###
 #Verify that the recipe has been deleted  
-GET {{SmartRecipe_Api_HostAddress}}/api/recipes/4  
-Accept: application/jsona
+GET {{SmartRecipe_Api_HostAddress}}/api/recipes/2  
+Accept: application/json
